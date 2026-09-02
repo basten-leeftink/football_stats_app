@@ -305,7 +305,7 @@ def match_lineup(match_id):
     stats_for_match = db.query(MatchPlayerStat).filter_by(match_id=match_id).all()
     stats_by_player = {}
     for r in stats_for_match:
-        stats_by_player[str(r.player_id)] = {
+        stats_by_player[r.player_id] = {
             "attended": "1" if r.attended else "0",
             "goals": str(r.goals or 0),
             "assists": str(r.assists or 0),
@@ -321,6 +321,7 @@ def match_lineup(match_id):
         players=players,
         stats_by_player=stats_by_player,
     )
+
 
 
 @app.route("/players/<int:player_id>")
