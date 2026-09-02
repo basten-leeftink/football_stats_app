@@ -1,0 +1,32 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h1>Training attendance</h1>
+<p>Training ID: {{ training_id }}</p>
+
+<form method="post">
+  <table class="stats-table">
+    <thead>
+      <tr>
+        <th>Player</th>
+        <th>Present</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in players %}
+      <tr>
+        <td>{{ p.name }}</td>
+        <td>
+          <input type="checkbox"
+                 name="attended_{{ p.id }}"
+                 {% if p.id in present_ids %}checked{% endif %}>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- extra players will go here, see next section -->
+
+  <button type="submit">Save attendance</button>
+</form>
+{% endblock %}

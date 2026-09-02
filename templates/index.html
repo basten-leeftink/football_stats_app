@@ -1,0 +1,71 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h1>Buitenveldert 7</h1>
+<h2>Player stats overview</h2>
+<table class="stats-table">
+  <thead>
+    <tr>
+      <th>Player</th>
+      <th>Matches</th>
+      <th>Goals</th>
+      <th>Assists</th>
+      <th>Yellow</th>
+      <th>Red</th>
+      <th>Traings</th>
+      <th>% Tranings</th>
+      <th>T/PM</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for s in player_stats %}
+    <tr>
+      <td>
+        <a href="{{ url_for('player_detail', player_id=s.player_id) }}">
+          {{ s.name }}
+        </a>
+      </td>
+      <td>{{ s.matches_played }}</td>
+      <td>{{ s.goals }}</td>
+      <td>{{ s.assists }}</td>
+      <td>{{ s.yellow_cards }}</td>
+      <td>{{ s.red_cards }}</td>
+      <td>{{ s.trainings_attended }}</td>
+      <td>{{ (s.trainings_attended / s.total_trainings) | round(2) }}</td>
+      <td>{{ s.training_per_match }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h2>Matches</h2>
+<table class="stats-table">
+  <thead><tr><th>Date</th><th>Opponent</th><th>Goals</th><th>Goals Against</th><th>Competition</th><th>Location</th></tr></thead>
+  <tbody>
+  {% for m in matches %}
+    <tr>
+      <td>        
+        <a href="{{ url_for('match_lineup', match_id=m.id) }}">
+          {{ m.date }}
+      </a></td>
+      <td>{{ m.opponent }}</td>
+      <td>{{ m.goals }}</td>
+      <td>{{ m.goals_against }}</td>
+      <td>{{ m.competition }}</td>
+      <td>{{ m.location }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+<h2>Trainings</h2>
+<table class="stats-table">
+  <thead><tr><th>Date</th><th>Attendance</th></tr></thead>
+  <tbody>
+  {% for t in training_summary %}
+    <tr>
+      <td>{{ t.date }}</td>
+      <td>{{ t.attendance_count }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,146 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h1>{{ player.name }}</h1>
+
+<h2>General stats</h2>
+<table>
+  <tbody>
+    <tr><th>Matches played</th><td>{{ matches_played }}</td></tr>
+    <tr><th>Goals</th><td>{{ goals }}</td></tr>
+    <tr><th>Assists</th><td>{{ assists }}</td></tr>
+    <tr><th>Yellow cards</th><td>{{ yellow }}</td></tr>
+    <tr><th>Red cards</th><td>{{ red }}</td></tr>
+    <tr><th>Games as goalkeeper</th><td>{{ keeper_games }}</td></tr>
+    <tr><th>Games as referee</th><td>{{ referee_games }}</td></tr>
+    <tr><th>Trainings attended</th><td>{{ trainings_attended }}</td></tr>
+    <tr><th>Total trainings</th><td>{{ total_trainings }}</td></tr>
+    <tr><th>Trainings per match</th>
+        <td>{{ "%.2f"|format(trainings_per_match) }}</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Matches</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Opponent</th>
+      <th>Competition</th>
+      <th>Location</th>
+      <th>Attended</th>
+      <th>Goals</th>
+      <th>Assists</th>
+      <th>Yellow</th>
+      <th>Red</th>
+      <th>GK</th>
+      <th>Ref</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for m in per_match_stats %}
+    <tr>
+      <td>{{ m.date }}</td>
+      <td>{{ m.opponent }}</td>
+      <td>{{ m.competition }}</td>
+      <td>{{ m.location }}</td>
+      <td>{{ 'Yes' if m.attended == '1' else 'No' }}</td>
+      <td>{{ m.goals }}</td>
+      <td>{{ m.assists }}</td>
+      <td>{{ m.yellow }}</td>
+      <td>{{ m.red }}</td>
+      <td>{{ 'Yes' if m.goalkeeper == '1' else '' }}</td>
+      <td>{{ 'Yes' if m.referee == '1' else '' }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h2>Trainings</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Attended</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for t in per_training %}
+    <tr>
+      <td>{{ t.date }}</td>
+      <td>{{ 'Yes' if t.attended == '1' else 'No' }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h2>Progress over time</h2>
+<div style="max-width: 800px;">
+  <canvas id="playerChart"></canvas>
+</div>
+
+<!-- toggles for customisation -->
+<div>
+  <label>
+    <input type="checkbox" id="toggleMatches" checked>
+    Matches played
+  </label>
+  <label>
+    <input type="checkbox" id="toggleGoals" checked>
+    Goals
+  </label>
+  <label>
+    <input type="checkbox" id="toggleTrainings" checked>
+    Trainings attended
+  </label>
+</div>
+
+<!-- Chart.js CDN (you can also put this in layout.html once) -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.0/dist/chart.umd.js"></script>
+
+<script>
+  // Data from Flask (use tojson to get JS arrays)
+  const matchLabels   = {{ chart_labels|tojson }};
+  const matchesData   = {{ matches_series|tojson }};
+  const goalsData     = {{ goals_series|tojson }};
+  const trainingLabels = {{ training_labels|tojson }};
+  const trainingsData  = {{ training_series|tojson }};
+
+  const ctx = document.getElementById('playerChart');
+
+  const chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: matchLabels,
+      datasets: [
+        {
+          label: 'Matches played (cumulative)',
+          data: matchesData,
+          borderColor: 'rgba(16, 118, 110, 1)',
+          backgroundColor: 'rgba(16, 118, 110, 0.1)',
+          tension: 0.2,
+        },
+        {
+          label: 'Goals per match',
+          data: goalsData,
+          borderColor: 'rgba(220, 38, 38, 1)',
+          backgroundColor: 'rgba(220, 38, 38, 0.1)',
+          tension: 0.2,
+        },
+        {
+          label: 'Trainings attended (cumulative)',
+          data: trainingsData,
+          borderColor: 'rgba(37, 99, 235, 1)',
+          backgroundColor: 'rgba(37, 99, 235, 0.1)',
+          tension: 0.2,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      interaction: { mode: 'index', intersect: false },
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+</script>
+{% endblock %}

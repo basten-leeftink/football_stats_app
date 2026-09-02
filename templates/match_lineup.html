@@ -1,0 +1,71 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h1>Match lineup & stats</h1>
+<p>Match ID: {{ match_id }}</p>
+
+<form method="post">
+  <table class="stats-table">
+    <thead>
+      <tr>
+        <th>Player</th>
+        <th>Attended</th>
+        <th>Goals</th>
+        <th>Assists</th>
+        <th>Yellow</th>
+        <th>Red</th>
+        <th>Goalkeeper</th>
+        <th>Referee</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in players %}
+      {% set row = stats_by_player.get(p.id) %}
+      <tr>
+        <td>{{ p.name }}</td>
+        <td>
+          <input type="checkbox"
+                 name="attended_{{ p.id }}"
+                 {% if row and row.attended == '1' %}checked{% endif %}>
+        </td>
+        <td>
+          <input type="number"
+                 min="0"
+                 name="goals_{{ p.id }}"
+                 value="{{ row.goals if row else 0 }}">
+        </td>
+        <td>
+          <input type="number"
+                 min="0"
+                 name="assists_{{ p.id }}"
+                 value="{{ row.assists if row else 0 }}">
+        </td>
+        <td>
+          <input type="number"
+                 min="0"
+                 name="yellow_{{ p.id }}"
+                 value="{{ row.yellow if row else 0 }}">
+        </td>
+        <td>
+          <input type="number"
+                 min="0"
+                 name="red_{{ p.id }}"
+                 value="{{ row.red if row else 0 }}">
+        </td>
+        <td>
+          <input type="checkbox"
+                 name="goalkeeper_{{ p.id }}"
+                 {% if row and row.goalkeeper == '1' %}checked{% endif %}>
+        </td>
+        <td>
+          <input type="checkbox"
+                 name="referee_{{ p.id }}"
+                 {% if row and row.referee == '1' %}checked{% endif %}>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <button type="submit">Save stats</button>
+</form>
+{% endblock %}

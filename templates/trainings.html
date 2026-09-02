@@ -1,0 +1,29 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h1>Trainings</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Attendance</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for t in trainings %}
+    <tr>
+      <td>
+          <a href="{{ url_for('training_attendance', training_id=t.id) }}">
+            {{ t.date }}
+          </a>
+      </td>    
+      <td>
+        <a href="{{ url_for('training_attendance', training_id=t.id) }}">
+          Attendance
+        </a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

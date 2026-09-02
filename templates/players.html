@@ -1,0 +1,22 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h1>Players</h1>
+<form method="post">
+  <label>Name<input type="text" name="name" required></label>
+  <button type="submit">Add player</button>
+</form>
+<table class="stats-table">
+  <thead><tr><th>Name</th></tr></thead>
+  <tbody>
+  {% for p in players %}
+    <tr>
+      <td>
+      <a href="{{ url_for('player_detail', player_id=p.id) }}">
+        {{ p.name }}
+      </a>
+    </td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
