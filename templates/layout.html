@@ -39,5 +39,51 @@
   <main>
     {% block content %}{% endblock %}
   </main>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      function makeSortable(tableId) {
+        const table = document.getElementById(tableId);
+        if (!table) return;
+  
+        const headers = table.querySelectorAll('thead th');
+        const tbody = table.querySelector('tbody');
+        const directions = Array(headers.length).fill('asc');
+  
+        headers.forEach((header, index) => {
+          header.style.cursor = 'pointer';
+  
+          header.addEventListener('click', () => {
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            const dir = directions[index];
+            const multiplier = dir === 'asc' ? 1 : -1;
+  
+            rows.sort((a, b) => {
+              const aText = a.children[index].textContent.trim();
+              const bText = b.children[index].textContent.trim();
+  
+              const aNum = parseFloat(aText);
+              const bNum = parseFloat(bText);
+  
+              if (!isNaN(aNum) && !isNaN(bNum)) {
+                return multiplier * (aNum - bNum);
+              }
+              return multiplier * aText.localeCompare(
+                bText,
+                undefined,
+                { numeric: true }
+              );
+            });
+  
+            rows.forEach(row => tbody.appendChild(row));
+            directions[index] = dir === 'asc' ? 'desc' : 'asc';
+          });
+        });
+      }
+  
+      makeSortable('playerStatsTable');
+      makeSortable('matchesTable');
+      makeSortable('trainingsTable');
+    });
+  </script>
 </body>
 </html>

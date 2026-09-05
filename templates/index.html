@@ -2,7 +2,7 @@
 {% block content %}
 <h1>Buitenveldert 7</h1>
 <h2>Player stats overview</h2>
-<table class="stats-table">
+<table class="stats-table" id="playerStatsTable">
   <thead>
     <tr>
       <th>Player</th>
@@ -38,7 +38,7 @@
 </table>
 
 <h2>Matches</h2>
-<table class="stats-table">
+<table class="stats-table" id="matchesTable">
   <thead><tr><th>Date</th><th>Opponent</th><th>Goals</th><th>Goals Against</th><th>Competition</th><th>Location</th></tr></thead>
   <tbody>
   {% for m in matches %}
@@ -57,15 +57,24 @@
   </tbody>
 </table>
 <h2>Trainings</h2>
-<table class="stats-table">
-  <thead><tr><th>Date</th><th>Attendance</th></tr></thead>
-  <tbody>
-  {% for t in training_summary %}
+<table class="stats-table" id="trainingsTable">
+  <thead>
     <tr>
-      <td>{{ t.date }}</td>
+      <th>Date</th>
+      <th>Attendance</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for t in training_summary %}
+    <tr>
+      <td>
+        <a href="{{ url_for('training_attendance', training_id=t.training_id) }}">
+          {{ t.date }}
+        </a>
+      </td>
       <td>{{ t.attendance_count }}</td>
     </tr>
-  {% endfor %}
+    {% endfor %}
   </tbody>
 </table>
 {% endblock %}
