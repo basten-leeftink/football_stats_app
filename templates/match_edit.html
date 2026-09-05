@@ -1,0 +1,39 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h1>Edit match</h1>
+
+<form method="post">
+  <label>
+    Date
+    <input type="date" name="date" value="{{ match.date }}">
+  </label><br>
+
+  <label>
+    Opponent
+    <input type="text" name="opponent" value="{{ match.opponent }}">
+  </label><br>
+
+  <label>
+    Competition
+    <input type="text" name="competition" value="{{ match.competition }}">
+  </label><br>
+
+  <label>
+    Location
+    <input type="text" name="location" value="{{ match.location }}">
+  </label><br>
+
+  <label>
+    Goals (your team)
+    <input type="number" name="goals" value="{{ match.goals }}">
+  </label><br>
+
+  <label>
+    Goals against
+    <input type="number" name="goals_against" value="{{ match.goals_against }}">
+  </label><br>
+
+  <button type="submit">Save changes</button>
+  <a href="{{ url_for('matches') }}">Cancel</a>
+</form>
+{% endblock %}
