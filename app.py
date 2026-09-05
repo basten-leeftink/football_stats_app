@@ -504,28 +504,25 @@ def training_attendance(training_id):
 def edit_match(match_id):
     db = g.db
     match = db.get(Match, match_id)
+
     if match is None:
         return f"Match {match_id} not found", 404
 
     if request.method == "POST":
-        # Update fields from form
         match.date = request.form["date"]
         match.opponent = request.form["opponent"]
-        match.competition = request.form.get("competition", "")
-        match.location = request.form.get("location", "")
+        match.competition = request.form.get("competition", "").strip()
+        match.location = request.form.get("location", "").strip()
 
-        goals = request.form.get("goals")
-        goals_against = request.form.get("goals_against")
+        goals = request.form.get("goals", "").strip()
+        goals_against = request.form.get("goals_against", "").strip()
 
-        match.goals = int(goals) if goals and goals.isdigit() else None
-        match.goals_against = (
-            int(goals_against) if goals_against and goals_against.isdigit() else None
-        )
+        match.goals = int(goals) if goals else None
+        match.goals_against = int(goals_against) if goals_against else None
 
-        # g.db is committed in teardown_request, so we just redirect
+        # Your teardown_request function commits g.db automatically.
         return redirect(url_for("matches"))
 
-    # GET: show form prefilled with existing match
     return render_template("match_edit.html", match=match)
 
 if __name__ == "__main__":
