@@ -100,9 +100,10 @@
 
 <script>
   // Data from Flask (use tojson to get JS arrays)
-  const matchLabels   = {{ chart_labels|tojson }};
-  const matchesData   = {{ matches_series|tojson }};
-  const goalsData     = {{ goals_series|tojson }};
+  const matchLabels    = {{ chart_labels|tojson }};
+  const matchesData    = {{ matches_series|tojson }};
+  const goalsData      = {{ goals_series|tojson }};        
+  const assistsData    = {{ assists_series|tojson }};      
   const trainingLabels = {{ training_labels|tojson }};
   const trainingsData  = {{ training_series|tojson }};
 
@@ -121,10 +122,17 @@
           tension: 0.2,
         },
         {
-          label: 'Goals per match',
+          label: 'Goals (cumulative)',
           data: goalsData,
           borderColor: 'rgba(220, 38, 38, 1)',
           backgroundColor: 'rgba(220, 38, 38, 0.1)',
+          tension: 0.2,
+        },
+        {
+          label: 'Assists (cumulative)',
+          data: assistsData,
+          borderColor: 'rgba(234, 179, 8, 1)',      // e.g. yellow
+          backgroundColor: 'rgba(234, 179, 8, 0.1)',
           tension: 0.2,
         },
         {

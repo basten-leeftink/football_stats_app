@@ -413,24 +413,38 @@ def player_detail(player_id):
         trainings_attended / matches_played if matches_played > 0 else 0
     )
 
-    # chart data
-    per_match_stats_sorted = sorted(per_match_stats, key=lambda m: m["date"])
-    chart_labels = [m["date"] for m in per_match_stats_sorted]
-    matches_series = list(range(1, len(per_match_stats_sorted) + 1))
-    goals_series = [int(m["goals"] or 0) for m in per_match_stats_sorted]
+    # Sort matches by date for time series
+    per_match_stats_sorted = sorted(per_match_stats, key=lambda m: m['date'])
+    chart_labels = [m['date'] for m in per_match_stats_sorted]
 
-    per_training_sorted = sorted(per_training, key=lambda t: t["date"])
-    training_labels = [t["date"] for t in per_training_sorted]
+    # Cumulative matches
+    matches_series = list(range(1, len(per_match_stats_sorted) + 1))
+
+    # Cumulative goals and assists
+    cumulative_goals = []
+    cumulative_assists = []
+    goals_total = 0
+    assists_total = 0
+
+    for m in per_match_stats_sorted:
+        goals_total += int(m.get('goals', 0) or 0)
+        assists_total += int(m.get('assists', 0) or 0)
+        cumulative_goals.append(goals_total)
+        cumulative_assists.append(assists_total)
+
+    # Trainings progress: cumulative attended by training date (unchanged)
+    per_training_sorted = sorted(per_training, key=lambda t: t['date'])
+    training_labels = [t['date'] for t in per_training_sorted]
     training_series = []
     count = 0
     for t in per_training_sorted:
-        if t["attended"] == "1":
+        if t['attended'] == '1':
             count += 1
         training_series.append(count)
 
     return render_template(
-        "player_detail.html",
-        player={"id": player.id, "name": player.name},
+        'player_detail.html',
+        player=player,
         matches_played=matches_played,
         goals=goals,
         assists=assists,
@@ -445,11 +459,11 @@ def player_detail(player_id):
         per_training=per_training_sorted,
         chart_labels=chart_labels,
         matches_series=matches_series,
-        goals_series=goals_series,
+        goals_series=cumulative_goals,          # now cumulative
+        assists_series=cumulative_assists,      # new series
         training_labels=training_labels,
         training_series=training_series,
     )
-
 
 @app.route("/trainings/<int:training_id>/attendance", methods=["GET", "POST"])
 def training_attendance(training_id):
